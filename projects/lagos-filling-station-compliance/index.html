@@ -1,0 +1,208 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Lagos Filling Station Siting Compliance · Progress Peter Akpan</title>
+  <meta name="description" content="A Leaflet.js web map and ArcGIS Dashboard checking 71 filling stations in Ikeja, Kosofe and Eti-Osa LGAs, Lagos, against station-spacing and road-setback siting rules, with a live proposed-site checker.">
+  <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Source+Serif+4:wght@600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/style.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><circle cx='16' cy='16' r='14' fill='%23b2182b'/><path d='M7 20c4-6 7-8 9-8s5 2 9 8' stroke='white' stroke-width='2.4' fill='none'/></svg>">
+  <style>.map-embed.tall{height:680px}@media (max-width:700px){.map-embed.tall{height:560px}}</style>
+</head>
+<body>
+  <nav class="nav"><div class="wrap">
+    <a class="brand" href="/">Progress Peter Akpan <span>· GIS</span></a>
+    <div class="nav-links"><a href="/#projects">All projects</a></div>
+  </div></nav>
+
+  <div class="wrap">
+    <p class="crumbs"><a href="/">Home</a> / <a href="/#projects">Projects</a> / Filling Station Compliance</p>
+    <header class="cs-hero">
+      <p class="eyebrow">Urban planning GIS · Regulatory compliance · Lagos State</p>
+      <h1>Lagos Filling Station Siting Compliance</h1>
+      <p class="lede">A spatial compliance audit of 71 filling stations in Ikeja, Kosofe and Eti-Osa LGAs against two siting
+        rules (400 m station spacing on the same side of the road, and a 15 m road setback), delivered as an ArcGIS Dashboard
+        and a Leaflet.js web map with a live checker for proposed sites.</p>
+      <div class="stats">
+        <div class="stat"><div class="v">71</div><div class="l">Filling stations assessed across 3 LGAs</div></div>
+        <div class="stat"><div class="v hot">13%</div><div class="l">Fully compliant with both rules (9 stations)</div></div>
+        <div class="stat"><div class="v">61</div><div class="l">Stations within 15 m of a road centreline</div></div>
+        <div class="stat"><div class="v">0.2 m</div><div class="l">Max difference between the web checker and ArcGIS Near results</div></div>
+      </div>
+      <div class="actions">
+        <a class="btn primary" href="map/">Open the interactive map ↗</a>
+        <a class="btn" href="https://sambusgeospatial.maps.arcgis.com/apps/dashboards/2626992a813443dda0c586c0152673d2" target="_blank" rel="noopener">Open the ArcGIS Dashboard ↗</a>
+      </div>
+    </header>
+
+    <div class="callout info"><p><strong>Professional demonstrator.</strong> I built the analysis and dashboard at Sambus Geospatial
+      Nigeria Limited as a demonstration for Lagos State urban-planning stakeholders, then rebuilt it for the open web with Leaflet.
+      Results are a screening exercise, not a regulatory determination.</p></div>
+
+    <div class="layout">
+      <nav class="toc" aria-label="Contents">
+        <a href="#overview">Overview</a><a href="#problem">Problem</a><a href="#study-area">Study area</a>
+        <a href="#objectives">Objectives</a><a href="#data">Data & sources</a><a href="#map">Interactive map</a>
+        <a href="#dashboard">ArcGIS Dashboard</a><a href="#method">Methodology</a><a href="#results">Results</a>
+        <a href="#limitations">Limitations</a><a href="#tech">Technologies</a>
+      </nav>
+      <article class="prose">
+        <section id="overview">
+          <h2>Overview</h2>
+          <p>A filling station stores tens of thousands of litres of petrol, diesel and often cooking gas under one forecourt. When
+            stations are packed close together, a fire or explosion at one can spread to the next, turning a single incident into a
+            disaster for the street around it. Port Harcourt has seen this happen. On Eleme Road, Elelenwo, a fire razed two filling
+            stations standing side by side. Three people died, 15 others suffered burns of varying degrees, and 14 cars and two
+            nearby houses were destroyed.</p>
+          <p>That is why siting rules exist. Nigeria's petroleum regulator (formerly the DPR, now the NMDPRA) sets minimum distances
+            that a new station must keep from other stations, roads and sensitive land uses. This project tests existing stations in
+            Lagos against two of those rules:</p>
+          <ul>
+            <li><strong>Station spacing:</strong> at least <strong>400 m</strong> from the nearest station on the <strong>same side of the
+              road</strong>, so fires cannot jump between neighbouring forecourts and stations do not crowd a single corridor.</li>
+            <li><strong>Road setback:</strong> at least <strong>15 m</strong> from the nearest road, so queues, tanker discharges and
+              any fire stay off the carriageway.</li>
+          </ul>
+          <p>The result is a rule-based screen published two ways: an ArcGIS Dashboard for planners, and an open web map anyone can use
+            to check a proposed site.</p>
+        </section>
+
+        <section id="problem">
+          <h2>Problem statement</h2>
+          <p>Lagos is Nigeria's most populous city, and its roads carry millions of vehicles every day. That demand drives a constant
+            stream of new filling stations, which compete for the same high-traffic frontages. The result is clustering: several
+            stations within a few hundred metres on the same stretch of road, and forecourts pushed right up to the kerb.</p>
+          <p>Siting checks are usually done case by case, on paper, with no shared picture of how close existing stations already are.
+            That makes it hard to see proliferation along a corridor, apply the rules consistently, or show an applicant exactly why a
+            site fails. A spatial, rule-based screen addresses all three.</p>
+        </section>
+
+        <section id="study-area">
+          <h2>Study area and rationale</h2>
+          <p>Three Local Government Areas were chosen because each represents a different driver of fuel demand:</p>
+          <div class="table-wrap"><table>
+            <tr><th>LGA</th><th>Why it was selected</th><th class="n">Stations</th></tr>
+            <tr><td><strong>Ikeja</strong></td><td>The state capital and administrative centre, home to Alausa and the state secretariat.
+              Heavy daily commuter and civil-service traffic.</td><td class="n">17</td></tr>
+            <tr><td><strong>Kosofe</strong></td><td>Borders Ikeja and is one of the most densely settled parts of Lagos, because many
+              people live close to the capital. Dense residential demand along Ikorodu Road and its feeders.</td><td class="n">15</td></tr>
+            <tr><td><strong>Eti-Osa</strong></td><td>The commercial, technology and corporate hub: Victoria Island, Ikoyi and the Lekki
+              corridor, where most large companies are headquartered. Rapid growth along the Lekki–Epe Expressway.</td><td class="n">39</td></tr>
+          </table></div>
+          <p>Together they cover an administrative core, a dense residential belt and a fast-growing business corridor, so the results
+            show how compliance varies with the type of urban growth.</p>
+        </section>
+
+        <section id="objectives">
+          <h2>Objectives</h2>
+          <ol>
+            <li>Map every filling station in Ikeja, Kosofe and Eti-Osa and attach it to its ward and LGA.</li>
+            <li>Measure each station's distance to the nearest station on the same side of the road, and to the nearest road.</li>
+            <li>Classify each station as fully compliant, single violation or double violation, and record the violation type.</li>
+            <li>Quantify proliferation: the number of stations within 400 m of each station.</li>
+            <li>Publish the results as an ArcGIS Dashboard and as an open web map with a checker for proposed sites.</li>
+          </ol>
+        </section>
+
+        <section id="data">
+          <h2>Data & sources</h2>
+          <div class="table-wrap"><table>
+            <tr><th>Dataset</th><th>Source</th><th>Use</th></tr>
+            <tr><td>Filling stations (71 points)</td><td>Station POI dataset with ward and LGA names, cleaned in ArcGIS Pro</td><td>Features assessed</td></tr>
+            <tr><td>Road network (about 19,500 segments)</td><td>OpenStreetMap, clipped to the three LGAs</td><td>Road setback and road-side grouping</td></tr>
+            <tr><td>LGA and ward boundaries</td><td>Lagos State administrative boundaries</td><td>Study area and attribution</td></tr>
+            <tr><td>Siting thresholds</td><td>DPR / NMDPRA filling-station siting guidelines</td><td>400 m spacing, 15 m setback</td></tr>
+            <tr><td>Live roads for the web checker</td><td>OpenStreetMap via the Overpass API</td><td>Proposed-site test</td></tr>
+            <tr><td>Basemaps</td><td>Esri Light Gray Canvas, World Street Map, World Imagery</td><td>Context</td></tr>
+          </table></div>
+          <p>Distances were measured in a projected coordinate system in ArcGIS Pro, and the layers were exported to WGS 84 GeoJSON for the web.</p>
+        </section>
+
+        <section id="map">
+          <h2>Interactive map</h2>
+          <p>Click any station for its distances and rule results. Use <strong>Drop a proposed site</strong> to test a new location:
+            the checker measures the nearest station on the same side of the frontage road and the nearest road, using live
+            OpenStreetMap roads.</p>
+          <div class="map-embed tall"><iframe src="map/" title="Lagos filling station compliance web map" loading="lazy"></iframe></div>
+        </section>
+
+        <section id="dashboard">
+          <h2>ArcGIS Dashboard</h2>
+          <p>The same analysis as an operational dashboard for reviewers: filters by LGA, status, violation type and station, with
+            proliferation and compliance-by-LGA charts.</p>
+          <div class="map-embed tall"><iframe src="https://sambusgeospatial.maps.arcgis.com/apps/dashboards/2626992a813443dda0c586c0152673d2" title="ArcGIS Dashboard: filling station compliance" loading="lazy" allowfullscreen></iframe></div>
+          <p style="font-size:14px;color:var(--muted)">If the dashboard panels are empty, <a href="https://sambusgeospatial.maps.arcgis.com/apps/dashboards/2626992a813443dda0c586c0152673d2" target="_blank" rel="noopener">open it directly on ArcGIS Online</a>.</p>
+        </section>
+
+        <section id="method">
+          <h2>Methodology</h2>
+          <div class="flow"><span>Station POIs</span><i>→</i><span>Left / right road-side split</span><i>→</i><span>Near: station ↔ station</span><i>→</i>
+            <span>Near: station ↔ road</span><i>→</i><span>Rule flags</span><i>→</i><span>Overall status</span><i>→</i><span>Dashboard + GeoJSON</span><i>→</i><span>Leaflet</span></div>
+          <ol>
+            <li><strong>Road-side grouping:</strong> stations in each LGA were split into left and right of the main road, so spacing is
+              only measured between stations a motorist would pass on the same side.</li>
+            <li><strong>Spacing test:</strong> <em>Near</em> within each side group gives the distance to the nearest station;
+              <code>≥ 400 m</code> is compliant.</li>
+            <li><strong>Setback test:</strong> <em>Near</em> against the OSM road network gives the distance to the nearest road
+              centreline; <code>≥ 15 m</code> is compliant.</li>
+            <li><strong>Classification:</strong> both rules met = fully compliant; one broken = single violation; both broken =
+              double violation. A 400 m buffer count gives the proliferation score.</li>
+            <li><strong>Publishing:</strong> the three LGA layers were merged, published to ArcGIS Online and built into a dashboard.
+              The layers were then exported to GeoJSON (WGS 84) for the web map.</li>
+            <li><strong>Web checker:</strong> the browser re-implements both tests in plain JavaScript. For a proposed site it fetches
+              roads within 700 m from OpenStreetMap, finds the nearest major road to decide which side of it the site is on, and
+              measures spacing to stations on that side only. Run against all 71 stations with the project road data, it reproduces
+              the ArcGIS road distances to within 0.2 m and every compliance class.</li>
+          </ol>
+        </section>
+
+        <section id="results">
+          <h2>Results</h2>
+          <div class="table-wrap"><table>
+            <tr><th>LGA</th><th class="n">Stations</th><th class="n">Fully compliant</th><th class="n">Single violation</th><th class="n">Double violation</th><th class="n">Fail setback</th><th class="n">Fail spacing</th></tr>
+            <tr><td>Eti-Osa</td><td class="n">39</td><td class="n">7</td><td class="n">28</td><td class="n">4</td><td class="n">31</td><td class="n">5</td></tr>
+            <tr><td>Ikeja</td><td class="n">17</td><td class="n">0</td><td class="n">15</td><td class="n">2</td><td class="n">17</td><td class="n">2</td></tr>
+            <tr><td>Kosofe</td><td class="n">15</td><td class="n">2</td><td class="n">11</td><td class="n">2</td><td class="n">13</td><td class="n">2</td></tr>
+            <tr><td><strong>Total</strong></td><td class="n"><strong>71</strong></td><td class="n"><strong>9</strong></td><td class="n"><strong>54</strong></td><td class="n"><strong>8</strong></td><td class="n"><strong>61</strong></td><td class="n"><strong>9</strong></td></tr>
+          </table></div>
+          <ul>
+            <li>Only <strong>9 of 71 stations (13%)</strong> meet both rules; no station in Ikeja does.</li>
+            <li><strong>Road setback is the dominant failure</strong> (61 stations); spacing fails at 9.</li>
+            <li>The 8 double violations sit where stations cluster on the same side of busy corridors, which is where proliferation
+              control matters most.</li>
+          </ul>
+        </section>
+
+        <section id="limitations">
+          <h2>Limitations</h2>
+          <ul>
+            <li><strong>Point position drives the setback result.</strong> Many station points sit 0–10 m from the road centreline,
+              likely because POIs are placed at the entrance rather than the forecourt. Digitising forecourt positions from imagery is
+              the main next step, and would likely lower the setback failure rate.</li>
+            <li><strong>Centreline, not road edge:</strong> setback is measured to the OSM centreline, without carriageway width or
+              right-of-way.</li>
+            <li><strong>Road-side split is an approximation.</strong> The ArcGIS analysis grouped stations by side of the main road; the
+              web checker uses the nearest major road locally, which is less reliable at junctions and roundabouts.</li>
+            <li><strong>Live OSM roads</strong> in the checker may differ slightly from the road extract used in ArcGIS.</li>
+            <li><strong>Two rules only.</strong> Real approvals also consider distance to schools, hospitals and other sensitive
+              uses, plot size, and environmental requirements.</li>
+          </ul>
+        </section>
+
+        <section id="tech">
+          <h2>Technologies</h2>
+          <p>ArcGIS Pro (Near, Buffer, Spatial Join) · ArcGIS Online · ArcGIS Dashboards · ArcPy (GeoJSON export) · Leaflet ·
+            JavaScript · OpenStreetMap / Overpass API · Esri basemaps · Vercel</p>
+        </section>
+      </article>
+    </div>
+  </div>
+
+  <footer><div class="wrap">
+    <span>© 2026 Progress Peter Akpan · <a href="/">Back to portfolio</a></span>
+    <span>Roads: © OpenStreetMap contributors · Basemaps: Esri</span>
+  </div></footer>
+</body>
+</html>

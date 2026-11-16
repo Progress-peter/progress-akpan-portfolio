@@ -1,0 +1,267 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Lagos Urban Heat Island 2019–2029 · Progress Peter Akpan</title>
+  <meta name="description" content="Surface urban heat island of Lagos State from Landsat 8/9, Dec 2019–2025, with LGA-level results, maps and a hindcast-tested projection to 2029.">
+  <meta property="og:image" content="/assets/uhi-card.jpg">
+  <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Source+Serif+4:wght@600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/style.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><circle cx='16' cy='16' r='14' fill='%23b2182b'/><path d='M7 20c4-6 7-8 9-8s5 2 9 8' stroke='white' stroke-width='2.4' fill='none'/></svg>">
+</head>
+<body>
+  <nav class="nav"><div class="wrap">
+    <a class="brand" href="/">Progress Peter Akpan <span>· GIS</span></a>
+    <div class="nav-links"><a href="/#projects">All projects</a><a href="map/">Interactive map</a></div>
+  </div></nav>
+
+  <div class="wrap">
+    <p class="crumbs"><a href="/">Home</a> / <a href="/#projects">Projects</a> / Lagos Urban Heat Island</p>
+    <header class="cs-hero">
+      <p class="eyebrow">Remote sensing · Urban climate · Lagos State</p>
+      <h1>Lagos Urban Heat Island, 2019–2029</h1>
+      <p class="lede">How much hotter is built-up Lagos than its vegetated land, where is the heat concentrated, and is it getting
+        worse? Four December dry seasons of Landsat 8/9 surface temperature, analysed LGA by LGA, plus a projection to 2029
+        that I tested against held-out data.</p>
+      <div class="actions">
+        <a class="btn primary" href="map/">Open interactive map →</a>
+        <a class="btn" href="#results">Jump to results</a>
+        <a class="btn" href="code/lagos_uhi_lst.ipynb" download>Download notebook (.ipynb)</a>
+      </div>
+      <div class="stats">
+        <div class="stat"><div class="v hot">+4.5 to +5.5 °C</div><div class="l">Built-up vs. vegetated land surface temperature, every December 2019–2025</div></div>
+        <div class="stat"><div class="v hot">+8.8 °C</div><div class="l">Shomolu, the hottest LGA in Dec 2025 (heat excess)</div></div>
+        <div class="stat"><div class="v">201 → 457 km²</div><div class="l">Hotspot area, 2019 → 2021/2023 (296 km² in 2025)</div></div>
+        <div class="stat"><div class="v">123</div><div class="l">Cloud-masked Landsat 8/9 scenes across four epochs</div></div>
+      </div>
+    </header>
+
+    <figure class="figure">
+      <img src="img/01_heat_excess_2019_2025.jpg" alt="Four maps of heat excess across Lagos State for December 2019, 2021, 2023 and 2025" loading="lazy">
+      <figcaption>Heat excess (land surface temperature minus the mean of vegetated land, same season) for each December epoch.
+        The dense mainland core stays hottest throughout.</figcaption>
+    </figure>
+
+    <div class="layout">
+      <nav class="toc" aria-label="Contents">
+        <a href="#overview">Overview</a><a href="#problem">Problem</a><a href="#objectives">Objectives</a>
+        <a href="#study-area">Study area</a><a href="#data">Data & sources</a><a href="#method">Methodology</a>
+        <a href="#results">Results</a><a href="#map">Interactive map</a><a href="#interpretation">Interpretation</a>
+        <a href="#limitations">Limitations</a><a href="#tech">Technologies</a><a href="#repro">Reproducibility</a>
+      </nav>
+
+      <article class="prose">
+        <section id="overview">
+          <h2>Overview</h2>
+          <p>This project measures how the <strong>surface urban heat island (SUHI)</strong> of Lagos State has changed every
+            two years. Four observed epochs (Dec 2019, 2021, 2023 and 2025) come from Landsat 8/9 land surface temperature
+            (LST). The change is linked to built-up expansion mapped with Google Dynamic World, and heat is projected to 2027
+            and 2029 under two scenarios: built-up growth continuing at each LGA's observed rate, or no further growth. The
+            analysis runs in Google Earth Engine (Python API), and the results are published as an interactive Leaflet web map.</p>
+        </section>
+
+        <section id="problem">
+          <h2>Problem statement</h2>
+          <p>Lagos is one of Africa's fastest-growing megacities. Wetlands, farmland and tree cover on its fringes
+            (Lekki–Ibeju-Lekki, Ikorodu, Alimosho, the Badagry axis) are being converted to buildings and paved surfaces, which
+            absorb and re-radiate more heat than vegetated ground. A single heat map shows where it is hot today. It cannot
+            show whether the heat island is intensifying, which LGAs are warming fastest, or what continued expansion would
+            mean by the end of the decade. Planners need that trend, and an honestly tested projection, to decide where to
+            protect green space, plant trees or apply cool-surface measures.</p>
+        </section>
+
+        <section id="objectives">
+          <h2>Objectives</h2>
+          <ol>
+            <li>Map December dry-season LST for Lagos State in 2019, 2021, 2023 and 2025 at 30 m.</li>
+            <li>Measure SUHI intensity, LGA-level heat excess and hotspot area in each epoch, and the change in hotspots and
+              built-up land from 2019 to 2025.</li>
+            <li>Estimate how heat excess changes with built-up expansion and with time, and project 2027 and 2029 with
+              uncertainty and a hindcast accuracy check.</li>
+            <li>Publish the results as an open, interactive web map.</li>
+          </ol>
+        </section>
+
+        <section id="study-area">
+          <h2>Study area</h2>
+          <p>Lagos State, south-west Nigeria: about 3,577 km² across 20 Local Government Areas. The state runs from the dense
+            urban core (Lagos Island, Lagos Mainland, Surulere, Mushin, Oshodi-Isolo, Ikeja) to fast-growing fringes (Eti-Osa,
+            Ibeju-Lekki, Ikorodu, Alimosho) and largely rural Epe and Badagry, with extensive lagoons, mangroves and wetlands.
+            The analysis covers about 2,450 km² of land, with water excluded.</p>
+        </section>
+
+        <section id="data">
+          <h2>Data & sources</h2>
+          <div class="table-wrap"><table>
+            <tr><th>Dataset</th><th>Source</th><th>Date</th><th>Resolution</th><th>Format</th></tr>
+            <tr><td>Landsat 8 C2 L2 (<code>ST_B10</code>, <code>SR_B4/B5</code>, <code>QA_PIXEL</code>)</td><td>USGS, via Earth Engine</td><td>Nov–Feb windows</td><td>30 m (thermal 100 m native)</td><td>Image collection</td></tr>
+            <tr><td>Landsat 9 C2 L2 (same bands)</td><td>USGS, via Earth Engine</td><td>From early 2022</td><td>30 m (thermal 100 m native)</td><td>Image collection</td></tr>
+            <tr><td>Dynamic World V1 (annual mode)</td><td>Google / WRI, via Earth Engine</td><td>2019, 2021, 2023, 2025</td><td>10 m</td><td>Image collection</td></tr>
+            <tr><td>FAO GAUL 2015, levels 1 & 2</td><td>FAO, via Earth Engine</td><td>2015</td><td>Vector</td><td>Feature collection</td></tr>
+            <tr><td>Basemap</td><td>© OpenStreetMap contributors, © CARTO</td><td>Current</td><td>Tiles</td><td>XYZ</td></tr>
+          </table></div>
+          <div class="table-wrap"><table>
+            <tr><th>Epoch</th><th>Imagery window (December-centred dry season)</th><th>Status</th></tr>
+            <tr><td>2019</td><td>1 Nov 2019 – 29 Feb 2020</td><td>Observed (baseline)</td></tr>
+            <tr><td>2021</td><td>1 Nov 2021 – 28 Feb 2022</td><td>Observed</td></tr>
+            <tr><td>2023</td><td>1 Nov 2023 – 29 Feb 2024</td><td>Observed</td></tr>
+            <tr><td>2025</td><td>1 Nov 2025 – 28 Feb 2026</td><td>Observed</td></tr>
+            <tr><td>2027, 2029</td><td>n/a</td><td>Projected</td></tr>
+          </table></div>
+        </section>
+
+        <section id="method">
+          <h2>Methodology</h2>
+          <div class="flow"><span>Landsat 8/9 C2 L2</span><i>→</i><span>Cloud mask + °C</span><i>→</i><span>Dry-season median</span><i>→</i>
+            <span>Dynamic World zones</span><i>→</i><span>Heat excess & hotspots</span><i>→</i><span>LGA panel model</span><i>→</i><span>Hindcast + projection</span></div>
+          <ol>
+            <li><strong>LST:</strong> <code>LST(°C) = ST_B10 × 0.00341802 + 149.0 − 273.15</code>. Collection 2 Level-2 already includes atmospheric and emissivity correction.</li>
+            <li><strong>Masking and compositing:</strong> pixels flagged in <code>QA_PIXEL</code> bits 0–4 (fill, dilated cloud,
+              cirrus, cloud, shadow) are removed, as are values outside 10–70 °C. Scenes with 40% or more cloud cover are
+              excluded, and pixels need at least 3 clear observations. A per-pixel median is taken for each epoch, and water is
+              masked with a fixed land mask.</li>
+            <li><strong>Zones:</strong> Dynamic World annual mode gives built-up land (class 6) and a vegetated reference (trees,
+              grass, crops, shrub). Flooded vegetation is excluded from the reference.</li>
+            <li><strong>Heat excess</strong> = LST minus the mean LST of vegetated land in the same epoch. Both terms come from
+              the same images, so year-to-year weather largely cancels and epochs become comparable. <strong>SUHI
+              intensity</strong> is the heat excess of all built-up land.</li>
+            <li><strong>Hotspots:</strong> heat excess at or above the 2019 90th percentile (6.62 °C). The threshold is fixed, so
+              hotspot area is comparable across years.</li>
+            <li><strong>Model:</strong> an LGA × year panel with LGA fixed effects:
+              <code>heat_excess = α<sub>LGA</sub> + β·built_share + γ·year</code>. β captures the effect of expansion; γ captures
+              background drift.</li>
+            <li><strong>Scenarios</strong> from each LGA's 2025 level: S1 lets built-up land keep growing at its 2019–2025 rate;
+              S2 freezes it at 2025.</li>
+            <li><strong>Uncertainty:</strong> 95% intervals from 2,000 cluster-bootstrap draws over LGAs.</li>
+            <li><strong>Validation:</strong> a hindcast fits the model on 2019–2023, predicts 2025, and compares the result with a
+              naive "no change" baseline.</li>
+          </ol>
+        </section>
+
+        <section id="results">
+          <h2>Results</h2>
+          <p>All values come from a single run of the Earth Engine notebook on 8 November 2026.</p>
+          <div class="table-wrap"><table>
+            <tr><th>Metric</th><th class="n">Dec 2019</th><th class="n">Dec 2021</th><th class="n">Dec 2023</th><th class="n">Dec 2025</th></tr>
+            <tr><td>Landsat scenes (L8 + L9)</td><td class="n">20 + 0</td><td class="n">20 + 16</td><td class="n">17 + 20</td><td class="n">14 + 16</td></tr>
+            <tr><td>Valid land coverage</td><td class="n">83.9%</td><td class="n">96.9%</td><td class="n">97.2%</td><td class="n">84.0%</td></tr>
+            <tr><td>Built-up mean LST</td><td class="n">36.43 °C</td><td class="n">37.14 °C</td><td class="n">37.47 °C</td><td class="n">37.04 °C</td></tr>
+            <tr><td>Vegetated mean LST</td><td class="n">31.94 °C</td><td class="n">31.62 °C</td><td class="n">31.94 °C</td><td class="n">32.04 °C</td></tr>
+            <tr><td><strong>SUHI intensity</strong></td><td class="n"><strong>+4.49 °C</strong></td><td class="n"><strong>+5.52 °C</strong></td><td class="n"><strong>+5.53 °C</strong></td><td class="n"><strong>+5.00 °C</strong></td></tr>
+            <tr><td>Hotspot area</td><td class="n">200.6 km²</td><td class="n">456.6 km²</td><td class="n">456.5 km²</td><td class="n">295.5 km²</td></tr>
+            <tr><td>Lagos-wide mean heat excess (19 LGAs)</td><td class="n">2.10 °C</td><td class="n">2.56 °C</td><td class="n">2.72 °C</td><td class="n">2.48 °C</td></tr>
+          </table></div>
+
+          <h3>Where the heat is</h3>
+          <figure class="figure"><img src="img/02_lst_2025.jpg" alt="Map of land surface temperature in Lagos State, December 2025" loading="lazy">
+            <figcaption>Land surface temperature, Dec 2025: the median of 30 clear Landsat 8/9 scenes.</figcaption></figure>
+          <div class="table-wrap"><table>
+            <tr><th>Hottest LGAs, Dec 2025</th><th class="n">Heat excess</th><th>Largest rise, 2019 → 2025</th><th class="n">Change</th></tr>
+            <tr><td>Shomolu</td><td class="n">+8.75 °C</td><td>Lagos Mainland</td><td class="n">+3.69 °C</td></tr>
+            <tr><td>Lagos Mainland</td><td class="n">+7.96 °C</td><td>Shomolu</td><td class="n">+3.33 °C</td></tr>
+            <tr><td>Surulere</td><td class="n">+7.06 °C</td><td>Apapa</td><td class="n">+2.34 °C</td></tr>
+            <tr><td>Mushin</td><td class="n">+7.03 °C</td><td>Oshodi-Isolo</td><td class="n">+1.82 °C</td></tr>
+            <tr><td>Ajeromi-Ifelodun</td><td class="n">+6.56 °C</td><td>Surulere</td><td class="n">+1.57 °C</td></tr>
+          </table></div>
+          <p>The coolest LGAs in Dec 2025 were Badagry (+0.39 °C), Epe (+0.57 °C) and Ibeju-Lekki (+1.37 °C).</p>
+
+          <h3>What changed</h3>
+          <figure class="figure"><img src="img/03_change_and_hotspots.jpg" alt="Maps of change in heat excess 2019 to 2025 and hotspot persistence" loading="lazy">
+            <figcaption>Top: change in heat excess, 2019 → 2025. Bottom: hotspots that persisted, appeared or disappeared.</figcaption></figure>
+          <div class="fig-grid">
+            <figure class="figure"><img src="img/suhi_by_epoch.jpg" alt="Bar chart of SUHI intensity by epoch" loading="lazy"><figcaption>SUHI intensity by epoch.</figcaption></figure>
+            <figure class="figure"><img src="img/built_by_lga.jpg" alt="Bar chart of built-up share by LGA 2019 and 2025" loading="lazy"><figcaption>Built-up share by LGA, 2019 vs 2025 (Dynamic World).</figcaption></figure>
+          </div>
+
+          <h3>Projection to 2027 and 2029</h3>
+          <div class="table-wrap"><table>
+            <tr><th>Model / projection</th><th>Value</th></tr>
+            <tr><td>β: heat excess per +10 percentage points of built-up share</td><td>−0.29 °C [95% CI −0.58, +0.01], not distinguishable from zero</td></tr>
+            <tr><td>γ: background drift</td><td>+0.19 °C/yr [95% CI +0.11, +0.28]</td></tr>
+            <tr><td>Hindcast: fit 2019–2023, predict 2025 (MAE, 19 LGAs)</td><td>Model 1.27 °C vs. no-change baseline 0.89 °C</td></tr>
+            <tr><td>Lagos-wide heat excess 2027 (S1 / S2)</td><td>2.83 [2.68, 3.00] / 2.86 [2.70, 3.04] °C</td></tr>
+            <tr><td>Lagos-wide heat excess 2029 (S1 / S2)</td><td>3.19 [2.89, 3.53] / 3.25 [2.93, 3.60] °C</td></tr>
+          </table></div>
+          <div class="callout"><p><strong>The projection failed its own test.</strong> Asked to predict 2025 from 2019–2023, the
+            model did worse than simply assuming no change. The 2027 and 2029 values are therefore shown as an illustrative
+            "if the 2019–2025 drift continues" extrapolation, not as a forecast.</p></div>
+          <div class="fig-grid">
+            <figure class="figure"><img src="img/trend_projection.jpg" alt="Line chart of observed and projected Lagos-wide heat excess" loading="lazy"><figcaption>Observed heat excess (2019–2025) and the illustrative projection with 95% bands.</figcaption></figure>
+            <figure class="figure"><img src="img/lga_projection.jpg" alt="Bar chart of LGA heat excess 2025 and 2029 scenarios" loading="lazy"><figcaption>Per-LGA heat excess, 2025 observed vs 2029 scenarios.</figcaption></figure>
+          </div>
+          <figure class="figure"><img src="img/04_lga_2025_vs_2029.jpg" alt="Choropleth maps of LGA heat excess, 2025 observed and 2029 projected" loading="lazy">
+            <figcaption>Mean heat excess per LGA, observed 2025 vs. the illustrative 2029 extrapolation. Small core LGAs are numbered.</figcaption></figure>
+        </section>
+
+        <section id="map">
+          <h2>Interactive map</h2>
+          <p>Switch between years, toggle temperature or heat excess, and overlay hotspot change and new built-up land. Click an
+            LGA for its statistics and projections.</p>
+          <div class="map-embed"><iframe src="map/" title="Interactive map of the Lagos urban heat island" loading="lazy"></iframe></div>
+          <a class="btn" href="map/">Open the map full screen →</a>
+        </section>
+
+        <section id="interpretation">
+          <h2>Interpretation</h2>
+          <ul>
+            <li><strong>Lagos has a strong, persistent surface heat island.</strong> Built-up land was 4.5–5.5 °C hotter than
+              vegetated land in every December.</li>
+            <li><strong>The heat is concentrated in the dense mainland core.</strong> Shomolu, Lagos Mainland, Surulere, Mushin
+              and Ajeromi-Ifelodun sit 6.5–8.8 °C above vegetated land. Epe, Ibeju-Lekki and Badagry stay within about 1.5 °C.</li>
+            <li><strong>Heat rose sharply from 2019 to 2021, held through 2023, then eased in 2025.</strong> 2019 and 2025 had
+              lower image coverage (84% vs. 97%), and 2019 used Landsat 8 only, so part of these steps may reflect image
+              availability rather than surface change.</li>
+            <li><strong>Densification, not sprawl.</strong> LGA-level built-up share does not explain the warming (β ≈ 0). The
+              LGAs that warmed most were already more than 75% built-up in 2019, which points to change inside the existing
+              urban fabric.</li>
+            <li><strong>An honest negative result.</strong> The trend model did not beat a no-change baseline, so the
+              projections are illustrative. Testing building-density data such as Google Open Buildings, in place of land-cover
+              classes, is the natural next step.</li>
+          </ul>
+        </section>
+
+        <section id="limitations">
+          <h2>Limitations</h2>
+          <ul>
+            <li><strong>Surface, not air, temperature:</strong> measured at about 10:30 local time. Night-time heat retention isn't captured.</li>
+            <li><strong>Uneven sensors and coverage:</strong> 2019 is Landsat 8 only; 2019 and 2025 have about 84% valid coverage
+              against about 97% for 2021 and 2023. Ifako-Ijaye was excluded from the model in 2025.</li>
+            <li><strong>Bright sand:</strong> the ocean beach and dredged sand-fill sites (e.g. along the Lekki coast) read hot
+              without being urban.</li>
+            <li><strong>Harmattan haze</strong> can bias some December–February scenes.</li>
+            <li><strong>Dynamic World label noise</strong> between years, especially on construction sites.</li>
+            <li><strong>Resolution and boundaries:</strong> thermal data is 100 m native, and GAUL 2015 LGA boundaries are approximate.</li>
+            <li><strong>Projections are illustrative:</strong> they can be properly tested once Dec 2027 imagery exists (after Feb 2028).</li>
+          </ul>
+        </section>
+
+        <section id="tech">
+          <h2>Technologies</h2>
+          <p>Google Earth Engine (Python API) · Python (NumPy, Matplotlib) · Google Colab · Landsat 8/9 · Dynamic World ·
+            Leaflet 1.9.4 · Chart.js 4.4.1 · HTML/CSS/JavaScript</p>
+        </section>
+
+        <section id="repro">
+          <h2>Reproducibility</h2>
+          <ol>
+            <li>Download the <a href="code/lagos_uhi_lst.ipynb" download>Earth Engine notebook</a> and open it in Google Colab.</li>
+            <li>Set <code>EE_PROJECT</code> to your own non-commercial Earth Engine Cloud project ID.</li>
+            <li>Run all cells (about 10–20 minutes). The notebook writes the web-map data, figures and <code>uhi_outputs.zip</code>.</li>
+            <li>Rebuild the static maps with <a href="code/make_maps.py" download>make_maps.py</a>.</li>
+            <li>Check the projection model without Earth Engine using <a href="code/test_model_synthetic.py" download>test_model_synthetic.py</a>,
+              which runs on a clearly labelled synthetic panel with known coefficients.</li>
+          </ol>
+          <p>The full repository will be published on GitHub; until then, the code files are downloadable from this page.</p>
+        </section>
+      </article>
+    </div>
+  </div>
+
+  <footer><div class="wrap">
+    <span>© 2026 Progress Peter Akpan · <a href="/">Back to portfolio</a></span>
+    <span>Data: USGS Landsat · Google Dynamic World · FAO GAUL</span>
+  </div></footer>
+</body>
+</html>

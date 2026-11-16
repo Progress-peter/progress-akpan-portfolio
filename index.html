@@ -1,0 +1,184 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Progress Peter Akpan · GIS & Remote Sensing Portfolio</title>
+  <meta name="description" content="GIS and remote sensing portfolio of Progress Peter Akpan, Lagos, Nigeria: urban heat, 3D urban growth mapping, deforestation-risk screening and environmental change from satellite data.">
+  <meta property="og:title" content="Progress Peter Akpan · GIS & Remote Sensing Portfolio">
+  <meta property="og:description" content="Satellite data and GIS for environmental change in Nigeria.">
+  <meta property="og:image" content="/assets/uhi-card.jpg">
+  <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Source+Serif+4:wght@600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/style.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><circle cx='16' cy='16' r='14' fill='%23b2182b'/><path d='M7 20c4-6 7-8 9-8s5 2 9 8' stroke='white' stroke-width='2.4' fill='none'/></svg>">
+</head>
+<body>
+  <nav class="nav"><div class="wrap">
+    <a class="brand" href="/">Progress Peter Akpan <span>· GIS</span></a>
+    <div class="nav-links"><a href="#projects">Projects</a><a href="/publications/">Publications</a><a href="#about">About</a><a href="#skills">Skills</a></div>
+  </div></nav>
+
+  <header class="hero"><div class="wrap">
+    <p class="eyebrow">GIS & Remote Sensing · Lagos, Nigeria</p>
+    <h1>Measuring environmental change in Nigeria from space.</h1>
+    <p class="lede">I'm Progress Peter Akpan, a geospatial analyst. I turn satellite data into maps and evidence about urban heat,
+      vegetation loss and emissions in Nigerian cities and landscapes, and I document every limitation along the way.</p>
+    <ul class="chips">
+      <li>BSc Geography, University of Lagos</li>
+      <li>Esri Cartography certified</li>
+      <li>NCA member</li>
+      <li><a href="/publications/" style="color:inherit;text-decoration:none">Peer-reviewed: GHG concentrations across Nigeria (Sentinel-5P, GEE) →</a></li>
+      <li>Advanced-certified UAV pilot (WingtraOne GEN II)</li>
+    </ul>
+  </div></header>
+
+  <section id="projects"><div class="wrap">
+    <h2>Projects</h2>
+    <p class="section-intro">Each project has its full write-up: problem, data, method, results, maps and limitations.
+      Projects still in progress are marked; they'll be added here as they're completed.</p>
+    <div class="grid">
+      <a class="card featured" href="/projects/urban-heat-island-lagos/">
+        <div class="thumb"><img src="/assets/uhi-card.jpg" alt="Map of surface heat excess across Lagos State, December 2025"></div>
+        <div class="body">
+          <span class="status done">Completed · Interactive map</span>
+          <h3>Lagos Urban Heat Island, 2019–2029</h3>
+          <p>Four December dry seasons of Landsat 8/9 surface temperature show built-up Lagos running 4.5–5.5 °C hotter than
+            vegetated land, with the heat concentrated in Shomolu, Lagos Mainland, Surulere and Mushin. Includes a hindcast-tested
+            projection to 2029.</p>
+          <div class="meta"><span class="tag">Google Earth Engine</span><span class="tag">Python</span><span class="tag">Landsat 8/9</span><span class="tag">Leaflet</span></div>
+        </div>
+      </a>
+
+      <a class="card" href="/projects/lagos-in-layers/">
+        <div class="thumb"><img src="/assets/lagos-in-layers-card.svg" alt="Illustration of 3D buildings coloured by period of construction beside a lagoon"></div>
+        <div class="body">
+          <span class="status done">Completed · Interactive 3D map</span>
+          <h3>Lagos in Layers: Every Building in Lagos State in 3D</h3>
+          <p>All 2,176,483 buildings in Lagos State in 3D, coloured by period of construction and height, with sourced history layers
+            and a street-level panorama. Almost half of today's building stock was added after 2016.</p>
+          <div class="meta"><span class="tag">Overture Maps</span><span class="tag">Python</span><span class="tag">three.js</span><span class="tag">Open Buildings</span></div>
+        </div>
+      </a>
+
+      <a class="card" href="/projects/lagos-filling-station-compliance/">
+        <div class="thumb">
+          <svg viewBox="0 0 320 160" width="100%" height="100%" role="img" aria-label="Illustration of filling stations along a road with 400 m spacing zones">
+            <rect width="320" height="160" fill="#ecebe6"/>
+            <g stroke="#c9c5bb" stroke-width="2" fill="none"><path d="M0 120 L320 120"/><path d="M60 0 L90 160"/><path d="M230 0 L250 160"/><path d="M0 40 L320 30"/></g>
+            <path d="M0 82 C80 78 160 86 320 76" stroke="#8a8f96" stroke-width="7" fill="none"/>
+            <path d="M0 82 C80 78 160 86 320 76" stroke="#fff" stroke-width="1.2" stroke-dasharray="8 7" fill="none"/>
+            <g fill="none" stroke-width="1.5" stroke-dasharray="4 3">
+              <circle cx="70" cy="64" r="34" stroke="#1a9850"/><circle cx="150" cy="66" r="34" stroke="#e09400"/>
+              <circle cx="176" cy="66" r="34" stroke="#d7301f"/><circle cx="262" cy="98" r="34" stroke="#e09400"/>
+            </g>
+            <g stroke="#fff" stroke-width="2"><circle cx="70" cy="64" r="7" fill="#1a9850"/><circle cx="150" cy="66" r="7" fill="#e09400"/>
+              <circle cx="176" cy="66" r="7" fill="#d7301f"/><circle cx="262" cy="98" r="7" fill="#e09400"/></g>
+          </svg>
+        </div>
+        <div class="body">
+          <span class="status done">Completed · Interactive map + Dashboard</span>
+          <h3>Lagos Filling Station Siting Compliance</h3>
+          <p>71 filling stations in Ikeja, Kosofe and Eti-Osa checked against 400 m spacing and 15 m road-setback rules. Only 13%
+            comply with both. Includes a live checker for proposed sites.</p>
+          <div class="meta"><span class="tag">ArcGIS Pro</span><span class="tag">Dashboards</span><span class="tag">Leaflet</span><span class="tag">OpenStreetMap</span></div>
+        </div>
+      </a>
+
+      <a class="card" href="/projects/eudr-palm-oil-traceability/">
+        <div class="thumb">
+          <svg viewBox="0 0 320 160" width="100%" height="100%" role="img" aria-label="Illustration of plantations linked to a supplier, with one flagged for review">
+            <rect width="320" height="160" fill="#e7efe3"/>
+            <g fill="#8fbf7f" stroke="#4f7d43" stroke-width="1.5">
+              <path d="M30 40 L95 30 L110 85 L45 95 Z"/><path d="M130 50 L190 40 L200 100 L140 108 Z"/>
+              <path d="M220 30 L290 45 L280 105 L215 95 Z"/><path d="M60 110 L120 115 L115 145 L55 142 Z"/>
+            </g>
+            <path d="M140 50 L190 40 L200 100 L140 108 Z" fill="none" stroke="#b2182b" stroke-width="3" stroke-dasharray="6 4"/>
+            <circle cx="165" cy="74" r="44" fill="none" stroke="#b2182b" stroke-width="1" opacity=".5"/>
+            <g stroke="#6a3d9a" stroke-width="1.5" stroke-dasharray="4 3"><path d="M175 132 L70 62"/><path d="M175 132 L168 76"/><path d="M175 132 L250 70"/></g>
+            <circle cx="175" cy="132" r="7" fill="#6a3d9a" stroke="#fff" stroke-width="2"/>
+          </svg>
+        </div>
+        <div class="body">
+          <span class="status done">Completed · Interactive map + Dashboard</span>
+          <h3>Palm Oil EUDR Traceability & Deforestation-Risk Screening</h3>
+          <p>17 oil-palm plantations in five southern states traced to 7 suppliers and screened for vegetation loss since the 2020 EUDR
+            cut-off with land-cover change, inside each plot and in a 10 km buffer. Includes GeoJSON export. Demonstration data.</p>
+          <div class="meta"><span class="tag">ArcGIS Pro</span><span class="tag">Field Maps</span><span class="tag">Dashboards</span><span class="tag">Leaflet</span></div>
+        </div>
+      </a>
+
+      <div class="card wip">
+        <div class="thumb">In progress</div>
+        <div class="body">
+          <span class="status wip">In progress</span>
+          <h3>Urban Green Space & Vegetation Health Explorer</h3>
+          <p>Sentinel-2 NDVI time series of green-space health and trend across Lagos.</p>
+          <div class="meta"><span class="tag">Earth Engine</span><span class="tag">Sentinel-2</span><span class="tag">Leaflet</span></div>
+        </div>
+      </div>
+
+      <div class="card wip">
+        <div class="thumb">In progress</div>
+        <div class="body">
+          <span class="status wip">Planned</span>
+          <h3>Nigeria Environmental Change Explorer</h3>
+          <p>Multi-temporal before/after analysis of land-cover change across Nigerian states.</p>
+          <div class="meta"><span class="tag">Earth Engine</span><span class="tag">Landsat / Sentinel-2</span></div>
+        </div>
+      </div>
+
+      <div class="card wip">
+        <div class="thumb">In progress</div>
+        <div class="body">
+          <span class="status wip">Planned</span>
+          <h3>Niger Delta Gas Flaring Dashboard</h3>
+          <p>Public visualisation of VIIRS Nightfire flare locations and Sentinel-5P methane and SO₂ trends.</p>
+          <div class="meta"><span class="tag">VIIRS</span><span class="tag">Sentinel-5P</span><span class="tag">Streamlit</span></div>
+        </div>
+      </div>
+    </div>
+  </div></section>
+
+  <section id="about"><div class="wrap two">
+    <div>
+      <h2>About</h2>
+      <p>I'm a Professional Services Analyst at Sambus Geospatial Nigeria Limited in Lagos, where I deploy enterprise
+        ArcGIS solutions and build client demonstrations. Before that I worked in technical sales, and as a research
+        assistant at the Centre of Excellence for Sustainable Environment and Social Inclusion and with the PALM-TREEs
+        Consortium.</p>
+      <p>My thesis measured greenhouse-gas concentrations across Nigerian states with Sentinel-5P TROPOMI and
+        Google Earth Engine, and became a <a href="/publications/">peer-reviewed paper</a> in <i>Remote Sensing in Earth Systems Sciences</i> (2026). I'm now working on attributing gas-flaring emissions in the
+        Niger Delta, and preparing for a funded Master's in geospatial science.</p>
+    </div>
+    <div>
+      <h2>How I work</h2>
+      <ul class="list">
+        <li>Open data first: Landsat, Sentinel, VIIRS, OpenStreetMap.</li>
+        <li>Nigerian context by default, from LGA level up.</li>
+        <li>Every result is reproducible from the published code.</li>
+        <li>Models are tested against held-out data, and failures are reported, not hidden.</li>
+        <li>No synthetic data is presented as real; demonstration data is always labelled.</li>
+      </ul>
+    </div>
+  </div></section>
+
+  <section id="skills"><div class="wrap">
+    <h2>Skills & tools</h2>
+    <p class="section-intro">The stack used across these projects.</p>
+    <div class="skills">
+      <div class="skill"><b>Esri ArcGIS</b><span>ArcGIS Pro, Enterprise, Online, Dashboards, Field Maps, ArcPy</span></div>
+      <div class="skill"><b>Remote sensing</b><span>Google Earth Engine (JS & Python), Landsat, Sentinel-2, Sentinel-5P TROPOMI</span></div>
+      <div class="skill"><b>Programming</b><span>Python (GeoPandas, Rasterio, NumPy), R (sf, terra; in progress), JavaScript</span></div>
+      <div class="skill"><b>Web mapping</b><span>Leaflet, three.js (3D WebGL), Chart.js, HTML/CSS, static hosting</span></div>
+      <div class="skill"><b>UAV</b><span>WingtraOne GEN II, advanced certified</span></div>
+      <div class="skill"><b>Cartography</b><span>Esri Cartography certification, thematic and change mapping</span></div>
+    </div>
+  </div></section>
+
+  <footer><div class="wrap">
+    <span>© 2026 Progress Peter Akpan</span>
+    <span>Built with open satellite data · Hosted on Vercel</span>
+  </div></footer>
+</body>
+</html>

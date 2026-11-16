@@ -1,0 +1,234 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Palm Oil EUDR Traceability & Deforestation-Risk Screening · Progress Peter Akpan</title>
+  <meta name="description" content="A Leaflet.js web map and ArcGIS Dashboard tracing 17 oil-palm plantations to 7 suppliers across five southern Nigerian states, with land-use/land-cover vegetation-loss screening against the EUDR 31 December 2020 cut-off.">
+  <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Source+Serif+4:wght@600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/style.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><circle cx='16' cy='16' r='14' fill='%23b2182b'/><path d='M7 20c4-6 7-8 9-8s5 2 9 8' stroke='white' stroke-width='2.4' fill='none'/></svg>">
+  <style>.map-embed.tall{height:680px}@media (max-width:700px){.map-embed.tall{height:560px}}</style>
+</head>
+<body>
+  <nav class="nav"><div class="wrap">
+    <a class="brand" href="/">Progress Peter Akpan <span>· GIS</span></a>
+    <div class="nav-links"><a href="/#projects">All projects</a></div>
+  </div></nav>
+
+  <div class="wrap">
+    <p class="crumbs"><a href="/">Home</a> / <a href="/#projects">Projects</a> / EUDR Traceability</p>
+    <header class="cs-hero">
+      <p class="eyebrow">Supply-chain GIS · Deforestation risk · Southern Nigeria</p>
+      <h1>Palm Oil EUDR Traceability & Deforestation-Risk Screening</h1>
+      <p class="lede">An end-to-end GIS workflow for EU Deforestation Regulation due diligence in a Nigerian palm-oil supply chain.
+        It links suppliers to plantation polygons, checks the geometry, and screens every plantation and its 10 km
+        surroundings for vegetation loss since the 31 December 2020 cut-off, using land-use/land-cover change. The results are
+        delivered as an ArcGIS Dashboard and a Leaflet.js web map with GeoJSON export.</p>
+      <div class="stats">
+        <div class="stat"><div class="v">17</div><div class="l">Plantations across 5 states, 13 linked to a supplier and 4 standalone</div></div>
+        <div class="stat"><div class="v">7</div><div class="l">Suppliers mapped: 2 aggregators and 5 millers</div></div>
+        <div class="stat"><div class="v hot">236 ha</div><div class="l">Vegetation lost inside plantations, 2020→2025 (0.46% of 51,482 ha)</div></div>
+        <div class="stat"><div class="v">2</div><div class="l">Plantations flagged "potential risk: requires further review"</div></div>
+      </div>
+      <div class="actions">
+        <a class="btn primary" href="map/">Open the interactive map ↗</a>
+        <a class="btn" href="https://sambusgeospatial.maps.arcgis.com/apps/dashboards/9c551a1a286e440797ef608c25b2c594" target="_blank" rel="noopener">Open the ArcGIS Dashboard ↗</a>
+      </div>
+    </header>
+
+    <div class="callout info"><p><strong>Methodology demonstrator.</strong> I built this at Sambus Geospatial Nigeria Limited as a
+      demonstration of an EUDR traceability workflow, then rebuilt it for the open web with Leaflet. All supplier and plantation records
+      are <strong>synthetic</strong>, created for the demo. The vegetation-loss figures come from the land-cover change analysis run over
+      those boundaries. They are screening results, not a deforestation determination.</p></div>
+
+    <div class="layout">
+      <nav class="toc" aria-label="Contents">
+        <a href="#overview">Overview</a><a href="#problem">Problem</a><a href="#objectives">Objectives</a>
+        <a href="#study-area">Study area</a><a href="#data">Data & sources</a><a href="#map">Interactive map</a>
+        <a href="#dashboard">ArcGIS Dashboard</a><a href="#method">Methodology</a><a href="#results">Results</a>
+        <a href="#limitations">Limitations</a><a href="#tech">Technologies</a>
+      </nav>
+      <article class="prose">
+        <section id="overview">
+          <h2>Overview</h2>
+          <p>Palm-oil buyers exporting to the EU must now prove, plot by plot, that what they buy was not grown on land
+            deforested after 31 December 2020. In Nigeria that is hard. Supply is dominated by smallholders, fruit and oil
+            move through aggregators and millers, and plantation boundaries are rarely recorded.</p>
+          <p>This project shows how a standard Esri stack can close that gap. Suppliers and plantations are captured in ArcGIS
+            Field Maps, linked in ArcGIS Online and checked in ArcGIS Pro. Each plantation is then screened for vegetation loss
+            between 2020 and 2025 by comparing land-use/land-cover (LULC) classifications. The results are published as an
+            ArcGIS Dashboard for compliance review and an open web map that exports the plantation polygons as GeoJSON.</p>
+        </section>
+
+        <section id="problem">
+          <h2>Problem statement</h2>
+          <p>Under Regulation (EU) 2023/1115, palm oil placed on the EU market must meet two conditions:</p>
+          <ul>
+            <li><strong>Deforestation-free:</strong> not produced on land converted from forest after 31 December 2020.</li>
+            <li><strong>Geolocated:</strong> with polygons for plots larger than 4 ha.</li>
+          </ul>
+          <p>Nigerian supply chains usually meet neither condition. Boundaries are undocumented, a single aggregator or mill sources from many
+            smallholdings, and some plantations have no traceable buyer at all. There is also no systematic way to flag land-cover
+            change since the cut-off. Buyers need a workflow that is cheap, auditable and runnable by their own teams.</p>
+        </section>
+
+        <section id="objectives">
+          <h2>Objectives</h2>
+          <ol>
+            <li>Design a field-collectable data model that links suppliers (aggregators and millers) to plantation polygons and still
+              supports standalone plantations.</li>
+            <li>Screen each plantation and its 10 km surroundings for vegetation loss between 2020 and 2025 using LULC change.</li>
+            <li>Summarise loss area and loss percentage per plantation in an ArcGIS Dashboard built for due-diligence review.</li>
+            <li>Publish an open web map and export verified plantation geometries and screening attributes as GeoJSON.</li>
+          </ol>
+        </section>
+
+        <section id="study-area">
+          <h2>Study area</h2>
+          <p>The study area covers oil-palm-producing parts of five southern Nigerian states: <strong>Akwa Ibom, Cross River, Ebonyi, Edo
+            and Imo</strong>. Screening runs at two scales:</p>
+          <ul>
+            <li><strong>Plantation:</strong> inside each plantation polygon.</li>
+            <li><strong>Landscape:</strong> inside a 10 km buffer around each plantation, which catches clearing in the wider sourcing area.</li>
+          </ul>
+          <div class="table-wrap"><table>
+            <tr><th>State</th><th class="n">Plantations</th><th>Suppliers</th></tr>
+            <tr><td>Akwa Ibom</td><td class="n">2</td><td>1 aggregator, 1 miller</td></tr>
+            <tr><td>Cross River</td><td class="n">5</td><td>1 aggregator, 1 miller</td></tr>
+            <tr><td>Ebonyi</td><td class="n">5</td><td>1 miller; 4 of its plantations have no supplier link</td></tr>
+            <tr><td>Edo</td><td class="n">2</td><td>1 miller</td></tr>
+            <tr><td>Imo</td><td class="n">3</td><td>1 miller</td></tr>
+          </table></div>
+        </section>
+
+        <section id="data">
+          <h2>Data & sources</h2>
+          <div class="table-wrap"><table>
+            <tr><th>Dataset</th><th>Source</th><th>Date</th><th>Format</th></tr>
+            <tr><td>Supplier records (7 points)</td><td>Synthetic, created for this demo</td><td>2026</td><td>Hosted feature layer</td></tr>
+            <tr><td>Plantation boundaries (17 polygons)</td><td>Synthetic, created for this demo; Field Maps schema</td><td>Collected Jul–Aug 2026</td><td>Hosted feature layer</td></tr>
+            <tr><td>Land-use/land-cover, baseline</td><td>My own LULC classification</td><td>2020</td><td>Classified raster</td></tr>
+            <tr><td>Land-use/land-cover, current</td><td>My own LULC classification</td><td>2025</td><td>Classified raster</td></tr>
+            <tr><td>10 km plantation buffers</td><td>Derived in ArcGIS Pro</td><td>—</td><td>Hosted feature layer</td></tr>
+            <tr><td>State boundaries</td><td>Nigeria administrative boundaries</td><td>—</td><td>Hosted feature layer</td></tr>
+            <tr><td>Basemaps</td><td>Esri Light Gray Canvas, World Imagery, World Topographic</td><td>Current</td><td>Tile services</td></tr>
+          </table></div>
+          <p>The web map reads the four layers live from the public ArcGIS Online feature service <code>EUDR_Traceability_Demo</code>, the same
+            service behind the dashboard. Only vector results are published, so no large rasters are redistributed.</p>
+        </section>
+
+        <section id="map">
+          <h2>Interactive map</h2>
+          <p>The map supports these tasks:</p>
+          <ul>
+            <li>Filter by state, screening status or supplier.</li>
+            <li>Click a plantation to see its traceability record and its loss inside the polygon and in the 10 km buffer.</li>
+            <li>Rank plantations by loss share.</li>
+            <li>Download the visible plantations as GeoJSON, the format EUDR due-diligence statements use for plot geolocation.</li>
+          </ul>
+          <div class="map-embed tall"><iframe src="map/" title="EUDR palm oil traceability web map" loading="lazy"></iframe></div>
+        </section>
+
+        <section id="dashboard">
+          <h2>ArcGIS Dashboard</h2>
+          <p>The dashboard presents the same analysis for reviewers. It has these elements:</p>
+          <ul>
+            <li>Supplier and plantation-linkage summaries.</li>
+            <li>Area and vegetation-change indicators.</li>
+            <li>A top-five table of plantations by loss share.</li>
+            <li>Filters by state, supplier type, link status, verification, evidence and EUDR screening status.</li>
+          </ul>
+          <div class="map-embed tall"><iframe src="https://sambusgeospatial.maps.arcgis.com/apps/dashboards/9c551a1a286e440797ef608c25b2c594" title="ArcGIS Dashboard: EUDR palm oil supply chain" loading="lazy" allowfullscreen></iframe></div>
+          <p style="font-size:14px;color:var(--muted)">If the dashboard panels are empty, <a href="https://sambusgeospatial.maps.arcgis.com/apps/dashboards/9c551a1a286e440797ef608c25b2c594" target="_blank" rel="noopener">open it directly on ArcGIS Online</a>.</p>
+        </section>
+
+        <section id="method">
+          <h2>Methodology</h2>
+          <div class="flow"><span>Field Maps</span><i>→</i><span>Supplier ↔ plantation link</span><i>→</i><span>Geometry QA</span><i>→</i>
+            <span>LULC 2020 & 2025</span><i>→</i><span>Vegetation-loss raster</span><i>→</i><span>Tabulate Area</span><i>→</i><span>Dashboard</span><i>→</i><span>Leaflet + GeoJSON</span></div>
+          <ol>
+            <li><strong>Data model:</strong> supplier points (type, state, annual volume) and plantation polygons with certification,
+              verification and evidence fields. Plantations link to suppliers through a nullable <code>Supplier_ID</code>, so standalone
+              plantations are allowed.</li>
+            <li><strong>Geometry verification:</strong> <code>Area_ha</code> was recalculated from the polygon geometry in a projected CRS.
+              One test plantation (PLT-005) carried a placeholder area of 35.63 ha but measured about 1,008 ha, roughly 28 times larger.
+              EUDR's 4 ha polygon rule depends on catching exactly this kind of error.</li>
+            <li><strong>Land-cover classification:</strong> the study area was classified into land-use/land-cover classes for 2020, the
+              year of the EUDR cut-off, and for 2025.</li>
+            <li><strong>Vegetation loss:</strong> any pixel in a vegetation class in 2020 that is no longer in a vegetation class in 2025 is
+              counted as loss. Everything else that was vegetated in 2020 is counted as retained vegetation.</li>
+            <li><strong>Zonal summary:</strong> <em>Tabulate Area</em> in a projected CRS gives loss and retained-vegetation hectares
+              per plantation and per 10 km buffer. The loss share is calculated as
+              <code>Loss_Percent = Loss_ha / (Loss_ha + NonLoss_ha) × 100</code>.</li>
+            <li><strong>Publishing:</strong> the results were joined to the plantation and buffer layers and published to ArcGIS Online.
+              They were then built into an ArcGIS Dashboard and this Leaflet map, which reads the service directly and exports GeoJSON
+              in WGS 84.</li>
+          </ol>
+          <div class="callout info"><p><strong>Deliberate wording.</strong> Flags read "potential risk: requires further review", never
+            "deforested". A change out of a vegetation class can also come from oil-palm replanting, harvest, burning, seasonal flooding or
+            classification error. Confirming deforestation needs higher-resolution imagery, history and field checks.</p></div>
+        </section>
+
+        <section id="results">
+          <h2>Results</h2>
+          <div class="table-wrap"><table>
+            <tr><th>Plantation</th><th>State</th><th>Supplier</th><th class="n">Area (ha)</th><th class="n">Loss inside (ha)</th><th class="n">Loss inside</th><th class="n">Loss, 10 km buffer</th><th>Screening</th></tr>
+            <tr><td>PLT-069</td><td>Ebonyi</td><td>Unlinked</td><td class="n">7,555</td><td class="n">165.5</td><td class="n">2.19%</td><td class="n">0.75%</td><td>Low</td></tr>
+            <tr><td>PLT-046</td><td>Imo</td><td>MIL-009</td><td class="n">2,197</td><td class="n">31.1</td><td class="n">1.42%</td><td class="n">3.77%</td><td>Low</td></tr>
+            <tr><td>PLT-014</td><td>Cross River</td><td>AGG-004</td><td class="n">4,822</td><td class="n">25.1</td><td class="n">0.52%</td><td class="n">0.39%</td><td><strong>Potential risk</strong></td></tr>
+            <tr><td>PLT-063</td><td>Ebonyi</td><td>MIL-012</td><td class="n">1,680</td><td class="n">2.4</td><td class="n">0.14%</td><td class="n">0.17%</td><td>Low</td></tr>
+            <tr><td>PLT-015</td><td>Cross River</td><td>MIL-003</td><td class="n">5,114</td><td class="n">6.6</td><td class="n">0.13%</td><td class="n">1.24%</td><td>Low</td></tr>
+            <tr><td>PLT-068</td><td>Ebonyi</td><td>Unlinked</td><td class="n">1,417</td><td class="n">1.6</td><td class="n">0.11%</td><td class="n">0.51%</td><td><strong>Potential risk</strong></td></tr>
+          </table></div>
+          <p style="font-size:14px;color:var(--muted)">The six plantations with the highest loss share inside the polygon. All 17 are in the map and dashboard.</p>
+          <ul>
+            <li><strong>Loss inside plantations is small overall:</strong> 236 ha of the 51,482 ha mapped (0.46%). No plantation loses more
+              than 2.2% of its area.</li>
+            <li><strong>One plantation dominates:</strong> PLT-069, a standalone Ebonyi plantation, accounts for 166 ha, 70% of all loss
+              inside plantations. It has no supplier link, so it is the clearest case to trace and verify before purchase.</li>
+            <li><strong>The landscape tells a different story:</strong> loss in the 10 km buffers is higher than inside the plantations
+              in most cases. It peaks at 3.8% around PLT-046 (Imo), 3.7% around PLT-021 and 3.2% around PLT-020 (both Edo). This is the
+              clearing a plot-only check would miss.</li>
+            <li><strong>Screening status reflects evidence, not loss alone:</strong> the two "potential risk" plantations (PLT-014 and
+              PLT-068) are the ones with <em>Review Required</em> evidence status. PLT-069 has the highest loss but clean evidence and
+              NASPON verification. The dashboard lets a reviewer see both signals side by side.</li>
+          </ul>
+          <p>No classification accuracy figures are reported here, because the screening has not been validated against field data.</p>
+        </section>
+
+        <section id="limitations">
+          <h2>Limitations</h2>
+          <ul>
+            <li><strong>Synthetic supply-chain data:</strong> the supplier and plantation records are not a real company's. The workflow is
+              the deliverable; the specific flags are not.</li>
+            <li><strong>Vegetation loss is not EUDR deforestation:</strong> EUDR uses FAO forest criteria (more than 0.5 ha, trees over 5 m,
+              canopy cover above 10%) and excludes agricultural plantations. The "any vegetation class lost" rule is broader than forest
+              loss, so it over-flags. That suits a first-pass screen but not a final finding.</li>
+            <li><strong>Two-date comparison:</strong> comparing two dates can miss clearing followed by regrowth, and errors in either
+              classification carry straight into the loss figures.</li>
+            <li><strong>No accuracy assessment published:</strong> there are no omission or commission estimates for the classification
+              or the loss map yet.</li>
+            <li><strong>Overlapping buffers:</strong> neighbouring 10 km buffers overlap, so buffer losses cannot be summed across
+              plantations.</li>
+            <li><strong>Next step:</strong> cross-check flagged areas against the EU Observatory's JRC Global Forest Cover 2020 map and
+              Hansen/GFW tree-cover loss.</li>
+          </ul>
+        </section>
+
+        <section id="tech">
+          <h2>Technologies</h2>
+          <p>ArcGIS Pro (Spatial Analyst: classification, Tabulate Area) · ArcGIS Online · ArcGIS Field Maps · ArcGIS Dashboards ·
+            ArcPy · Leaflet · JavaScript · ArcGIS REST API (GeoJSON) · Esri basemaps · Vercel</p>
+        </section>
+      </article>
+    </div>
+  </div>
+
+  <footer><div class="wrap">
+    <span>© 2026 Progress Peter Akpan · <a href="/">Back to portfolio</a></span>
+    <span>Data: EUDR_Traceability_Demo (synthetic demo records) · Basemaps: Esri</span>
+  </div></footer>
+</body>
+</html>

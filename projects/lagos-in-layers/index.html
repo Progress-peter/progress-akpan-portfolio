@@ -1,0 +1,267 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Lagos in Layers: Every Building in Lagos State in 3D · Progress Peter Akpan</title>
+  <meta name="description" content="An interactive 3D web map of all 2,176,483 buildings in Lagos State, coloured by period of construction and by height, with sourced history layers, a street-level panorama and a quiz. Built from Overture Maps, Google Open Buildings, GHSL and WSF data.">
+  <meta property="og:title" content="Lagos in Layers: Every Building in Lagos State in 3D">
+  <meta property="og:description" content="2,176,483 buildings, five eras of growth, and the stories that live in them.">
+  <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Source+Serif+4:wght@600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/style.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><circle cx='16' cy='16' r='14' fill='%23b2182b'/><path d='M7 20c4-6 7-8 9-8s5 2 9 8' stroke='white' stroke-width='2.4' fill='none'/></svg>">
+  <style>.map-embed.tall{height:680px}@media (max-width:700px){.map-embed.tall{height:560px}}
+    .swatch{display:inline-block;width:11px;height:11px;border-radius:3px;margin-right:7px;vertical-align:-1px}</style>
+</head>
+<body>
+  <nav class="nav"><div class="wrap">
+    <a class="brand" href="/">Progress Peter Akpan <span>· GIS</span></a>
+    <div class="nav-links"><a href="/#projects">All projects</a></div>
+  </div></nav>
+
+  <div class="wrap">
+    <p class="crumbs"><a href="/">Home</a> / <a href="/#projects">Projects</a> / Lagos in Layers</p>
+    <header class="cs-hero">
+      <p class="eyebrow">3D web mapping · Urban growth · Lagos State</p>
+      <h1>Lagos in Layers: Every Building in Lagos State in 3D</h1>
+      <p class="lede">An interactive 3D map of all 2,176,483 buildings in Lagos State, each coloured by the period it was built and by its
+        height, and set in the history that shaped the city. Users can replay five decades of growth, filter the skyline by floors,
+        explore sourced history layers, and walk the streets at eye level, all in the browser.</p>
+      <div class="stats">
+        <div class="stat"><div class="v">2,176,483</div><div class="l">Buildings rendered in 3D across all 20 LGAs</div></div>
+        <div class="stat"><div class="v hot">42.7%</div><div class="l">Of today's building stock added between 2016 and 2025</div></div>
+        <div class="stat"><div class="v">96.8%</div><div class="l">Of buildings are one or two storeys</div></div>
+        <div class="stat"><div class="v">19</div><div class="l">Sourced history layers in 9 themes, plus a 20-question quiz</div></div>
+      </div>
+      <div class="actions">
+        <a class="btn primary" href="https://lagos-in-layers-1.vercel.app/" target="_blank" rel="noopener">Open the 3D map ↗</a>
+        <a class="btn" href="#map">Try it on this page</a>
+      </div>
+    </header>
+
+    <div class="callout info"><p><strong>Personal, non-commercial project.</strong> Inspired by Alex Barakov's <em>LAYRS: Amsterdam</em>
+      and Sasha Bogachev's <em>Paris, building by building</em>, scaled up to a city more than ten times larger. Construction periods are
+      a satellite-evidence ranking calibrated to official housing-stock totals, not a surveyed register of building ages (see
+      <a href="#limitations">Limitations</a>).</p></div>
+
+    <div class="layout">
+      <nav class="toc" aria-label="Contents">
+        <a href="#overview">Overview</a><a href="#problem">Problem</a><a href="#study-area">Study area</a>
+        <a href="#objectives">Objectives</a><a href="#data">Data & sources</a><a href="#map">Interactive map</a>
+        <a href="#features">Features</a><a href="#method">Methodology</a><a href="#engineering">Engineering for scale</a>
+        <a href="#results">Results</a><a href="#limitations">Limitations</a><a href="#next">Next steps</a><a href="#tech">Technologies</a>
+      </nav>
+      <article class="prose">
+        <section id="overview">
+          <h2>Overview</h2>
+          <p>Lagos is one of the fastest-growing cities in the world, but its growth is usually described in population figures and
+            aerial photos rather than building by building. Amsterdam and Paris have open registers that record when every building
+            was built, and both have been turned into striking 3D maps. Lagos has no such register.</p>
+          <p>This project builds the Lagos equivalent from open satellite and mapping data. Every building footprint in the state is
+            extruded to its estimated height and placed in one of five development periods, from colonial and early-independence
+            Lagos to the post-2016 boom along the Lekki corridor and at Eko Atlantic. The period totals match the housing-stock
+            estimates in the <em>2025 State of Lagos Housing Market Report</em>, so the map adds up to a published figure rather than
+            an arbitrary count.</p>
+          <p>On top of the buildings sit sourced history layers: Old Eko, the Brazilian Quarter, the Badagry slave route, the
+            Independence era, Fela's Lagos, Makoko and the water city, land reclaimed from the lagoon, and the new edge of the city.
+            The result is a public, explorable record of how Lagos was built, for planners, students, researchers and residents.</p>
+        </section>
+
+        <section id="problem">
+          <h2>Problem statement</h2>
+          <p>Understanding where and when a city grew is basic evidence for housing policy, infrastructure planning, flood-risk work and
+            heritage protection. In Lagos that evidence is scattered. There is no public register of construction years, building
+            heights are mapped for only a fraction of structures, and the open building datasets that do exist (Overture Maps, Google
+            Open Buildings, Microsoft building footprints) arrive as tens of gigabytes of raw files that few people can open.</p>
+          <p>Even where the data is available, a city of more than two million buildings is too large for ordinary web maps, which
+            slow down or crash long before that size. The challenge was twofold: estimate a defensible age and height for every building
+            from open data, and deliver the result as a fast, intuitive map that runs in a normal browser on a laptop or phone.</p>
+        </section>
+
+        <section id="study-area">
+          <h2>Study area and rationale</h2>
+          <p>The map covers the whole of Lagos State: all <strong>20 Local Government Areas</strong> and about <strong>3,500 km²</strong> of
+            land, from Badagry in the west to Epe and the Lekki Free Trade Zone in the east. The whole state was chosen, rather than
+            the Island alone, because the story of Lagos is its expansion: the old core on Lagos Island, the mainland suburbs of the
+            1970s–1990s, and the newer belts along the Lekki–Epe Expressway, Ikorodu and the Lagos–Badagry corridor.</p>
+          <div class="table-wrap"><table>
+            <tr><th>Zone</th><th>Character</th><th>What the map shows</th></tr>
+            <tr><td><strong>Lagos Island, Ikoyi, Victoria Island</strong></td><td>Colonial core and the central business district</td><td>The oldest fabric and nearly all of the state's towers</td></tr>
+            <tr><td><strong>Mainland (Ikeja, Surulere, Mushin, Yaba)</strong></td><td>Dense post-independence growth and the state capital</td><td>Mass low-rise expansion from 1976 to 2010</td></tr>
+            <tr><td><strong>Lekki corridor and Eko Atlantic</strong></td><td>Planned estates and land reclaimed from the sea</td><td>Concentrated post-2011 construction</td></tr>
+            <tr><td><strong>Outer LGAs (Ikorodu, Alimosho, Badagry, Epe)</strong></td><td>Peri-urban frontier</td><td>Large areas of recent building at the edge of the metropolis</td></tr>
+          </table></div>
+        </section>
+
+        <section id="objectives">
+          <h2>Objectives</h2>
+          <ol>
+            <li>Assemble a single, clean footprint layer for every building in Lagos State from open data.</li>
+            <li>Estimate each building's height and the period in which it was built, and calibrate the period totals to the official
+              2025 housing-stock estimate.</li>
+            <li>Render all 2.18 million buildings in 3D in a standard web browser, with smooth navigation from the whole state down to
+              street level.</li>
+            <li>Connect the buildings to the city's history through sourced, themed layers, guided tours and landmark cards.</li>
+            <li>Make the result public, free and easy to explore for non-specialists.</li>
+          </ol>
+        </section>
+
+        <section id="data">
+          <h2>Data & sources</h2>
+          <div class="table-wrap"><table>
+            <tr><th>Dataset</th><th>Source</th><th>Use</th></tr>
+            <tr><td>Building footprints (2.23 million before filtering)</td><td>Overture Maps buildings, release 2026-09-23 (merges OpenStreetMap, Google Open Buildings and Microsoft ML Buildings); ODbL / CC BY 4.0</td><td>Geometry of every building</td></tr>
+            <tr><td>Building presence by year and height, 2016–2023</td><td>Google Open Buildings 2.5D Temporal; CC BY 4.0</td><td>First year each building appears; most heights</td></tr>
+            <tr><td>Built-up surface, 1975–2020 (100 m)</td><td>GHSL, European Commission Joint Research Centre</td><td>When the surrounding area was first built up</td></tr>
+            <tr><td>Settlement extent, 1985–2015 (30 m)</td><td>World Settlement Footprint Evolution, DLR</td><td>Year of first settlement at finer resolution</td></tr>
+            <tr><td>Housing stock by period</td><td>2025 State of Lagos Housing Market Report</td><td>Period totals that the map is calibrated to</td></tr>
+            <tr><td>LGA boundaries, land, water, roads, places</td><td>Overture Maps divisions, base, transportation and places themes</td><td>Basemap, labels, search and thematic layers</td></tr>
+            <tr><td>Street-level photos (2,491 landmarks)</td><td>Mapillary contributors; CC BY-SA 4.0, credited on each card</td><td>Photos on building cards</td></tr>
+            <tr><td>Landmark histories</td><td>Wikipedia and the sources linked on each story</td><td>History layers, tours and quiz</td></tr>
+          </table></div>
+          <p>All processing used open data only. Every dataset keeps its original licence, and each story on the map links to its source.</p>
+        </section>
+
+        <section id="map">
+          <h2>Interactive map</h2>
+          <p>Drag to move, scroll to zoom and use the buttons on the right to tilt and turn. Press <strong>play</strong> on the timeline to
+            watch the city grow, switch to <strong>Height</strong> to read the skyline, or open <strong>Stories</strong> and pick a layer.
+            On any landmark card, <strong>Panorama</strong> drops you to street level. The map is best on a laptop or desktop;
+            <a href="https://lagos-in-layers-1.vercel.app/" target="_blank" rel="noopener">open it full screen</a> for the full experience.</p>
+          <div class="map-embed tall"><iframe src="https://lagos-in-layers-1.vercel.app/" title="Lagos in Layers: 3D map of every building in Lagos State" loading="lazy" allowfullscreen></iframe></div>
+        </section>
+
+        <section id="features">
+          <h2>Features</h2>
+          <div class="table-wrap"><table>
+            <tr><th>Feature</th><th>What it does</th></tr>
+            <tr><td><strong>Year view and timeline</strong></td><td>Colours buildings by five development periods. The timeline replays growth year by year, with buildings rising as they appear. Clicking a period isolates it.</td></tr>
+            <tr><td><strong>Height view</strong></td><td>Colours buildings by estimated floors (about 3.2 m per floor), in nine classes from 1–2 storeys to 13 and more. Clicking a class isolates it.</td></tr>
+            <tr><td><strong>Stories</strong></td><td>19 themed layers in 9 themes (colonial Lagos, the slave trade, independence, faith, learning and health, arts and music, trade, water and land, the modern city) that highlight their buildings and grey out the rest.</td></tr>
+            <tr><td><strong>Building cards</strong></td><td>Period or documented year, height, footprint area, LGA, Wikipedia summary, a street-level photo where one exists, and buttons for Google Maps and Panorama.</td></tr>
+            <tr><td><strong>Panorama</strong></td><td>Street-level view inside the 3D model. Walk with W A S D or the arrow keys, or click the street ahead; buildings act as solid walls.</td></tr>
+            <tr><td><strong>Tours and Connections</strong></td><td>Guided walks through a story layer (for example the Badagry slave route), and a network of 61 people, events and organisations linked to the buildings they touched.</td></tr>
+            <tr><td><strong>Eko Quest</strong></td><td>A two-round, 20-question quiz. Read the clue, type the place, and the map flies there. Spelling slips are forgiven; hints cost points.</td></tr>
+            <tr><td><strong>Search</strong></td><td>Find any landmark, area or LGA and fly straight to it.</td></tr>
+          </table></div>
+        </section>
+
+        <section id="method">
+          <h2>Methodology</h2>
+          <div class="flow"><span>Overture footprints</span><i>→</i><span>Clip to 20 LGAs</span><i>→</i><span>Sample Google 2.5D (year, height)</span><i>→</i>
+            <span>Sample GHSL + WSF (area history)</span><i>→</i><span>Rank by age evidence</span><i>→</i><span>Fill report period totals</span><i>→</i>
+            <span>Story layers</span><i>→</i><span>5 km binary chunks</span><i>→</i><span>three.js viewer</span></div>
+          <ol>
+            <li><strong>Footprints:</strong> Overture Maps buildings were downloaded and clipped to the 20 LGA boundaries, giving about
+              2.23 million footprints. Fewer than 0.1% overlap one another, so the merged layer can be used without de-duplication.</li>
+            <li><strong>Height:</strong> each footprint takes its height from Overture where it is mapped, otherwise from Google Open
+              Buildings 2.5D (2023). Floors are estimated at about 3.2 m per storey.</li>
+            <li><strong>Age evidence:</strong> each footprint was sampled against three time series: the first year it appears in Google's
+              annual building maps (2016–2023), the first year its 30 m cell is settled in WSF Evolution (1985–2015), and the first epoch
+              its 100 m cell is built up in GHSL (1975–2020).</li>
+            <li><strong>Ranking:</strong> buildings were ordered from oldest to newest evidence. Within the same satellite date, buildings in
+              blocks that were already denser count as older, because cities fill in from established cores outwards.</li>
+            <li><strong>Calibration to housing stock:</strong> the oldest 325,000 buildings fill <em>Before 1976</em>, the next 457,119 fill
+              <em>1976–2000</em>, and so on, so each period holds exactly the report's figure. The 53,445 footprints with the least
+              satellite evidence were left out to make the total 2,176,483. Buildings with a documented date, such as Independence House
+              (1961), keep their real year.</li>
+            <li><strong>Story layers:</strong> landmarks from sourced histories were matched to their footprints, and Overture points of
+              interest (churches, mosques, schools, hospitals, markets, hotels) were joined to the buildings that contain them. In total
+              16,755 buildings carry at least one story layer.</li>
+            <li><strong>Photos and summaries:</strong> 2,491 landmarks were matched to the nearest Mapillary street photo facing them, and 96
+              buildings to their Wikipedia article.</li>
+          </ol>
+        </section>
+
+        <section id="engineering">
+          <h2>Engineering for scale</h2>
+          <p>Two million buildings would overwhelm most web maps, so the viewer was built specifically for this dataset:</p>
+          <ul>
+            <li><strong>Chunked streaming:</strong> the state is cut into 157 tiles of 5 × 5 km, stored as compact binary files (about
+              45 MB in total). Only the tiles around the camera are loaded, and distant ones are released from memory.</li>
+            <li><strong>Overview mode:</strong> zoomed out to the whole state, buildings are aggregated into 440 m columns, so the full
+              picture draws instantly.</li>
+            <li><strong>GPU shading:</strong> a custom WebGL shader colours buildings by period, height or layer, and animates them rising
+              on the timeline, without rebuilding any geometry.</li>
+            <li><strong>No build step:</strong> the site is plain HTML and JavaScript hosted as static files, so it loads fast and costs
+              nothing to run.</li>
+          </ul>
+        </section>
+
+        <section id="results">
+          <h2>Results</h2>
+          <h3>Five eras of growth</h3>
+          <div class="table-wrap"><table>
+            <tr><th>Period</th><th>Era</th><th class="n">Buildings</th><th class="n">Share</th></tr>
+            <tr><td><span class="swatch" style="background:#7b2d26"></span>Before 1976</td><td>Colonial and early independence Lagos</td><td class="n">325,000</td><td class="n">14.9%</td></tr>
+            <tr><td><span class="swatch" style="background:#c8642c"></span>1976–2000</td><td>Early urban expansion</td><td class="n">457,119</td><td class="n">21.0%</td></tr>
+            <tr><td><span class="swatch" style="background:#e3a83a"></span>2001–2010</td><td>Megacity sprawl</td><td class="n">376,813</td><td class="n">17.3%</td></tr>
+            <tr><td><span class="swatch" style="background:#2f8f83"></span>2011–2015</td><td>Lekki corridor and Eko Atlantic</td><td class="n">88,656</td><td class="n">4.1%</td></tr>
+            <tr><td><span class="swatch" style="background:#3b4cc0"></span>2016–2025</td><td>Recent urban expansion</td><td class="n">928,895</td><td class="n">42.7%</td></tr>
+            <tr><td><strong>Total</strong></td><td></td><td class="n"><strong>2,176,483</strong></td><td class="n"><strong>100%</strong></td></tr>
+          </table></div>
+          <h3>A low-rise city</h3>
+          <div class="table-wrap"><table>
+            <tr><th>Floors</th><th class="n">Buildings</th><th class="n">Share</th></tr>
+            <tr><td>1–2</td><td class="n">2,106,835</td><td class="n">96.8%</td></tr>
+            <tr><td>3</td><td class="n">53,550</td><td class="n">2.5%</td></tr>
+            <tr><td>4–8</td><td class="n">15,194</td><td class="n">0.7%</td></tr>
+            <tr><td>9–12</td><td class="n">578</td><td class="n">0.03%</td></tr>
+            <tr><td>13 and more</td><td class="n">326</td><td class="n">0.01%</td></tr>
+          </table></div>
+          <ul>
+            <li><strong>Almost half of Lagos is less than ten years old.</strong> The 2016–2025 period alone adds 928,895 buildings, more
+              than any earlier era and almost three times the stock that stood before 1976.</li>
+            <li><strong>Lagos grows outwards, not upwards.</strong> 96.8% of buildings are one or two storeys. The 904 buildings of nine
+              floors or more stand mostly on Lagos Island, Ikoyi, Victoria Island and Eko Atlantic.</li>
+            <li><strong>The evidence base is strongest for recent growth.</strong> About 645,000 buildings (29%) have direct building-level
+              evidence from Google's annual maps; the rest are dated from when their surroundings were first built up.</li>
+          </ul>
+        </section>
+
+        <section id="limitations">
+          <h2>Limitations</h2>
+          <ul>
+            <li><strong>Periods are estimated, not surveyed.</strong> Lagos has no public construction-year register. Periods come from a
+              ranking of satellite evidence, so an individual building's period can be wrong even when the totals are right.</li>
+            <li><strong>Homes versus buildings.</strong> The report counts housing units and the map counts buildings. Matching the two totals
+              is a deliberate calibration, not a claim that every building is one home.</li>
+            <li><strong>Coarse history before 2016.</strong> Pre-2016 evidence comes from 30 m and 100 m grids, which date neighbourhoods rather
+              than individual buildings. Redevelopment (an old house replaced by a new block) is not detected.</li>
+            <li><strong>Heights are modelled.</strong> Most heights come from a machine-learning estimate, and floors assume about 3.2 m per
+              storey, so roof forms and exact storey counts are approximate.</li>
+            <li><strong>Footprint quality varies.</strong> Machine-detected footprints can merge adjoining buildings in dense areas or miss
+              informal structures, especially in waterfront settlements such as Makoko.</li>
+            <li><strong>Stories are selective.</strong> The history layers cover documented landmarks; some pins are marked approximate where a
+              story concerns a place rather than one building.</li>
+          </ul>
+        </section>
+
+        <section id="next">
+          <h2>Next steps</h2>
+          <ul>
+            <li>An ArcGIS version of the workflow (ArcGIS Pro and a hosted 3D scene layer) for professional use.</li>
+            <li>More story layers, contributed by people who know the city's history.</li>
+            <li>Hidden games in the street-level view, built around everyday Lagos life.</li>
+            <li>Validation of periods against dated aerial imagery for sample neighbourhoods.</li>
+          </ul>
+        </section>
+
+        <section id="tech">
+          <h2>Technologies</h2>
+          <p>Python (pyarrow, GDAL, rasterio, NumPy, Shapely) · Overture Maps · Google Open Buildings 2.5D Temporal · GHSL · World Settlement
+            Footprint Evolution · Mapillary · three.js (custom WebGL shader) · d3 · HTML / CSS / JavaScript · Vercel</p>
+          <p style="font-size:14px;color:var(--muted)">Credits: inspired by Alex Barakov's LAYRS: Amsterdam and Sasha Bogachev's Paris, building by
+            building. The 3D building shader adapts parts of Barakov's open-source viewer (MIT licence).</p>
+        </section>
+      </article>
+    </div>
+  </div>
+
+  <footer><div class="wrap">
+    <span>© 2026 Progress Peter Akpan · <a href="/">Back to portfolio</a></span>
+    <span>Buildings: Overture Maps, Google Open Buildings · Photos: Mapillary contributors</span>
+  </div></footer>
+</body>
+</html>

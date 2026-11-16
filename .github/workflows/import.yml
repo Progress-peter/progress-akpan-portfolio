@@ -1,0 +1,43 @@
+# One-time import: copies this project's files from my live Vercel sites into the repo and commits them.
+# It only downloads files (curl) and runs `git commit`; nothing downloaded is executed.
+# README/.gitignore come from gh-import-kit.vercel.app; everything else from the project's own live site.
+# Safe to delete this file after the first run.
+name: Import project files
+on:
+  push:
+    paths: [".github/workflows/import.yml"]
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  import:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Download files from the live sites
+        shell: bash
+        run: |
+          set -euo pipefail
+          K=https://gh-import-kit.vercel.app/progress-akpan-portfolio
+          P=https://progress-akpan-portfolio.vercel.app
+          U=$P/projects/urban-heat-island-lagos
+          L=https://lagos-in-layers-1.vercel.app
+          LEAF="leaflet.css leaflet.js LICENSE images/layers-2x.png images/layers.png images/marker-icon-2x.png images/marker-icon.png images/marker-shadow.png"
+          get(){ mkdir -p "$(dirname "$2")"; curl -fsSL --retry 4 --retry-delay 3 "$1" -o "$2"; echo "ok $2"; }
+          get $K/README.md README.md
+          get $K/gitignore.txt .gitignore
+          get $K/vercel-json.txt vercel.json
+          for f in index.html publications/index.html assets/lagos-in-layers-card.svg assets/style.css assets/uhi-card.jpg projects/eudr-palm-oil-traceability/index.html projects/eudr-palm-oil-traceability/map/index.html projects/lagos-filling-station-compliance/index.html projects/lagos-filling-station-compliance/map/data.js projects/lagos-filling-station-compliance/map/index.html projects/lagos-in-layers/index.html; do get $P/$f $f; done
+          for f in index.html code/lagos_uhi_lst.ipynb code/make_maps.py code/test_model_synthetic.py map/app.js map/index.html map/style.css map/vendor/chartjs/LICENSE.md map/vendor/chartjs/chart.umd.js; do get $U/$f projects/urban-heat-island-lagos/$f; done
+          for f in 01_heat_excess_2019_2025 02_lst_2025 03_change_and_hotspots 04_lga_2025_vs_2029 built_by_lga lga_projection suhi_by_epoch trend_projection webmap; do get $U/img/$f.jpg projects/urban-heat-island-lagos/img/$f.jpg; done
+          for f in change.png excess_2019.png excess_2021.png excess_2023.png excess_2025.png hotspots_change.png lga.geojson lga_panel.json lst_2019.png lst_2021.png lst_2023.png lst_2025.png new_built.png projections.json summary.json; do get $U/map/data/$f projects/urban-heat-island-lagos/map/data/$f; done
+          for f in $LEAF; do get $U/map/vendor/leaflet/$f projects/urban-heat-island-lagos/map/vendor/leaflet/$f; done
+      - name: Commit
+        shell: bash
+        run: |
+          git config user.name "Progress Peter Akpan"
+          git config user.email "357548878+Progress-peter@users.noreply.github.com"
+          git add -A
+          printf '%s\n\nCo-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>\nClaude-Session: https://claude.ai/code/session_016mDH8SNRmcV7Z2q514LUHT\n' "Add portfolio website source" | git commit -q -F -
+          git push origin HEAD:main
+          echo "FILES: $(git ls-files | wc -l)"
